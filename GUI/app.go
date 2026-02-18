@@ -32,13 +32,12 @@ type UpdateableTable interface {
 }
 
 type App struct {
-	mu              sync.Mutex
-	gpus            []gpubuilder.GPU
-	tabs            *container.AppTabs
-	tabMap          map[string]UpdateableTable
-	SelectedTab     string
-	bindings        []*gpuBindings
-	overviewRefresh func()
+	mu          sync.Mutex
+	gpus        []gpubuilder.GPU
+	tabs        *container.AppTabs
+	tabMap      map[string]UpdateableTable
+	SelectedTab string
+	bindings    []*gpuBindings
 }
 
 func NewApp() *App {
@@ -77,13 +76,15 @@ func (app *App) UpdateLoop() {
 		}
 		app.mu.Lock()
 		app.gpus = fresh
+		tmp := app.gpus
 		app.mu.Unlock()
 
 		fyne.Do(func() {
-			app.mu.Lock()
-			defer app.mu.Unlock()
 			tabName := app.GetSelectedTab()
-			app.tabMap[tabName].Update(app.gpus)
+			tab, ok := app.tabMap[tabName]
+			if ok {
+				tab.Update(tmp)
+			}
 		})
 	}
 }
