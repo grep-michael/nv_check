@@ -20,8 +20,9 @@ func RunApp() {
 
 	overviewManager := BuildOverViewManager(nv_app.gpus)
 	pci_tab := BuildPCITab()
-	nv_app.RegisterTab("Overview", overviewManager)
+
 	nv_app.RegisterTab("PCI Devices", pci_tab)
+	nv_app.RegisterTab("Overview", overviewManager)
 
 	w.SetContent(nv_app.tabs)
 	go nv_app.UpdateLoop()
